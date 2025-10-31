@@ -89,10 +89,7 @@ human: |
   Translate the following structured graph topology JSON into Graphviz DOT code.
 
   JSON Schema Structure:
-  {json_schema}
-
-  Actual Graph Topology Data:
-  {intent_json}
+  {graph_context}
 
   Think step-by-step, then provide ONLY the Graphviz code block without any markdown formatting or explanations.
   Start your thinking with "Let's think step-by-step:" and then provide the Graphviz code.

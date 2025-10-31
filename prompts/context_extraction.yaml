@@ -31,6 +31,8 @@ system: |
   Ensure the output is a single, complete JSON object and nothing else.
 
 human: |
+  {user_request}
+  
   DOCUMENTATION:
 
   {documentation}
