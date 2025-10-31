@@ -2,6 +2,7 @@
 from langchain_core.prompts import ChatPromptTemplate
 from llm_utils import get_llm
 from prompt_loader import get_system_prompt, get_human_prompt
+from response_parser import extract_response_content, extract_graphviz_code
 
 
 def correct_diagram_code(
@@ -40,28 +41,9 @@ def correct_diagram_code(
     )
     response = llm.invoke(formatted_prompt.to_messages())
     
-    # Extract content
-    if hasattr(response, 'content'):
-        content = response.content
-    else:
-        content = str(response)
-    
-    # Extract graphviz code from response
-    if "```graphviz" in content:
-        corrected_code = content.split("```graphviz")[1].split("```")[0].strip()
-    elif "```" in content:
-        parts = content.split("```")
-        if len(parts) >= 3:
-            corrected_code = parts[1].strip()
-            # Remove language identifier if present
-            if "\n" in corrected_code:
-                lines = corrected_code.split("\n")
-                if not lines[0].strip().startswith("digraph") and not lines[0].strip().startswith("graph"):
-                    corrected_code = "\n".join(lines[1:])
-        else:
-            corrected_code = content
-    else:
-        corrected_code = content.strip()
+    # Extract content and parse graphviz code
+    content = extract_response_content(response)
+    corrected_code = extract_graphviz_code(content)
     
     return corrected_code
 

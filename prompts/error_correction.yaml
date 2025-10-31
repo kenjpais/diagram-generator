@@ -13,8 +13,8 @@ system: |
 human: |
   Analyze the root cause of the error in the following graphviz code and provide the corrected version.
 
-  Original user request (for context):
-  {original_request}
+  Context:
+  {graph_context}
 
   Flawed graphviz code:
   ```

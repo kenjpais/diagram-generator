@@ -1,13 +1,14 @@
 """Intent Extraction - Natural Language → Structured JSON"""
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import PydanticOutputParser
-from schemas import DiagramIntent
+from schemas import GraphIntent
 from llm_utils import get_llm
 from prompt_loader import get_system_prompt, get_human_prompt
+from response_parser import extract_response_content, extract_json_content
 import json
 
 
-def extract_intent(user_request: str) -> DiagramIntent:
+def extract_intent(user_request: str) -> GraphIntent:
     """
     Extract structured diagram intent from natural language using LLM.
     
@@ -15,7 +16,7 @@ def extract_intent(user_request: str) -> DiagramIntent:
         user_request: Raw natural language request from user
         
     Returns:
-        DiagramIntent: Structured JSON object describing the diagram
+        GraphIntent: Structured JSON object describing the graph topology
     """
     llm = get_llm()
     
@@ -24,11 +25,11 @@ def extract_intent(user_request: str) -> DiagramIntent:
     human_prompt = get_human_prompt("intent_extraction.yaml")
     
     # Use Pydantic output parser for structured output
-    parser = PydanticOutputParser(pydantic_object=DiagramIntent)
+    parser = PydanticOutputParser(pydantic_object=GraphIntent)
     
-    # Create prompt with format instructions
+    # Create prompt - format instructions already in YAML prompt
     prompt = ChatPromptTemplate.from_messages([
-        ("system", system_prompt + "\n\n" + parser.get_format_instructions()),
+        ("system", system_prompt),
         ("human", human_prompt)
     ])
     
@@ -42,34 +43,33 @@ def extract_intent(user_request: str) -> DiagramIntent:
     
     # Parse response
     try:
-        # Handle different response types
-        if hasattr(response, 'content'):
-            content = response.content
-        else:
-            content = str(response)
+        # Extract JSON content from response
+        raw_content = extract_response_content(response)
+        json_content = extract_json_content(raw_content)
         
-        # Try to extract JSON from response if it's wrapped in markdown
-        if "```json" in content:
-            content = content.split("```json")[1].split("```")[0].strip()
-        elif "```" in content:
-            content = content.split("```")[1].split("```")[0].strip()
-        
-        # Parse JSON and create DiagramIntent
-        parsed_json = json.loads(content)
-        intent = DiagramIntent(**parsed_json)
+        # Parse JSON and create GraphIntent
+        parsed_json = json.loads(json_content)
+        intent = GraphIntent(**parsed_json)
         return intent
         
-    except Exception as e:
-        # Fallback: try to parse directly
+    except json.JSONDecodeError as e:
+        # Fallback: try to parse using Pydantic parser directly
         try:
-            intent = parser.parse(content)
+            raw_content = extract_response_content(response)
+            intent = parser.parse(raw_content)
             return intent
         except Exception as parse_error:
-            raise ValueError(f"Failed to parse LLM response: {parse_error}. Raw response: {content}")
+            raise ValueError(
+                f"Failed to parse LLM response: {parse_error}. "
+                f"JSON decode error: {e}. Raw response: {raw_content[:500]}"
+            )
+    except Exception as e:
+        raw_content = extract_response_content(response)
+        raise ValueError(f"Failed to process LLM response: {e}. Raw response: {raw_content[:500]}")
 
 
 if __name__ == "__main__":
     # Test the intent extraction
-    test_request = "Draw a sequence diagram for user login and database check"
+    test_request = "Draw a network topology with routers, switches, and servers"
     intent = extract_intent(test_request)
     print(json.dumps(intent.model_dump(), indent=2))
