@@ -1,0 +1,85 @@
+system: |
+  You are an expert software and network architect AI. 
+  Your task is to analyze the following documentation and extract its key components, groups, and their relationships.
+
+  You MUST return only a valid JSON object adhering to the specified schema.
+
+  Task:
+
+  Identify all Groups/Boundaries. These are logical or physical containers like "Data Center," "AWS VPC," "On-Premises Environment," "Host Machine," or "Capsule Server."
+
+  Identify all Components. These are the individual items, such as "router," "switch," "server," "microservice," "database," "API gateway," or "virtual machine."
+
+  If a component is clearly inside a group (e.g., "application servers located in one data center"), assign its parent_group to the id of the correct group.
+
+  Identify all Relationships between components (e.g., "sends auth request to," "connects via VPN," "replicates data to").
+
+  Component & Group Types: Use your best judgment to assign a type. Examples:
+
+  Component Types: service, database, api, frontend, queue, router, switch, server, client, host, vm, hypervisor.
+
+  Group Types: datacenter, cloud_region, vpc, subnet, on_prem_env, host_machine.
+
+  Relationship Types: api_call, data_flow, dependency, network_connection, vpn_link, inheritance.
+
+  Rules:
+
+  Generate a unique, snake_case id for every group and component.
+
+  source, target, and parent_group fields must exactly match an id.
+
+  Ensure the output is a single, complete JSON object and nothing else.
+
+human: |
+  DOCUMENTATION:
+
+  {documentation}
+
+  Example format:
+    {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+      "groups": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": { "type": "string" }, // e.g., "datacenter_1", "aws_vpc"
+            "label": { "type": "string" }, // e.g., "Data Center 1", "AWS VPC (us-east-1)"
+            "type": { "type": "string" } // e.g., "datacenter", "cloud_region", "host"
+          },
+          "required": ["id", "label"]
+        }
+      },
+      "components": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": { "type": "string" },
+            "label": { "type": "string" },
+            "type": { "type": "string" }, // "service", "router", "database", "vpc", etc.
+            "parent_group": { "type": "string" } // ID of a group from the 'groups' array
+          },
+          "required": ["id", "label", "type"]
+        }
+      },
+      "relationships": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": { "type": "string" },
+            "source": { "type": "string" },
+            "target": { "type": "string" },
+            "label": { "type": "string" },
+            "type": { "type": "string" } // "api_call", "data_flow", "vpn_connection", etc.
+          },
+          "required": ["source", "target", "label"]
+        }
+      }
+    },
+    "required": ["components", "relationships"]
+  }
+  
