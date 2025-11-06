@@ -5,7 +5,7 @@ system: |
   
   Rules:
   1. Always use `digraph G` for directed graphs
-  2. Use subgraphs (clustered subgraphs) for groups: `subgraph "cluster_{group_id}" { ... }`
+  2. Use subgraphs (clustered subgraphs) for groups: `subgraph "cluster_{{group_id}}" {{ ... }}`
   3. Map component types to appropriate Graphviz shapes and styles:
      - service: shape=box, style=rounded, fillcolor="#D6EAF8"
      - database: shape=cylinder, fillcolor="#D1F2EB"
@@ -29,12 +29,12 @@ system: |
      - inheritance: style=dashed, arrowhead=empty, color="#9B59B6"
   
   5. Map group types to appropriate subgraph styles:
-     - datacenter: label="{label}", style=dashed, bgcolor="#F4F6F6"
-     - cloud_region: label="{label}", style=rounded, bgcolor="#EBF5FB"
-     - vpc: label="{label}", style=rounded, bgcolor="#FDF2E9"
-     - subnet: label="{label}", style=dotted, bgcolor="#F9E79F"
-     - on_prem_env: label="{label}", style=solid, bgcolor="#D5DBDB"
-     - host_machine: label="{label}", style=rounded, bgcolor="#E8F8F5"
+     - datacenter: label="{{label}}", style=dashed, bgcolor="#F4F6F6"
+     - cloud_region: label="{{label}}", style=rounded, bgcolor="#EBF5FB"
+     - vpc: label="{{label}}", style=rounded, bgcolor="#FDF2E9"
+     - subnet: label="{{label}}", style=dotted, bgcolor="#F9E79F"
+     - on_prem_env: label="{{label}}", style=solid, bgcolor="#D5DBDB"
+     - host_machine: label="{{label}}", style=rounded, bgcolor="#E8F8F5"
   
   6. Components with parent_group should be placed inside the corresponding subgraph
   7. Components without parent_group should be placed outside all subgraphs

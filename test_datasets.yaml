@@ -1,0 +1,95 @@
+test_samples:
+  - name: "Kubernetes Cluster Core Components"
+    description: "Key components that make up a Kubernetes cluster and how they interact."
+    components:
+      - Control Plane
+      - Node
+      - Pod
+      - Container Runtime
+      - Persistent Storage
+      - Service
+      - Deployment
+      - Custom Resource
+    relationships:
+      - source: "Control Plane"
+        target: "Node"
+        type: "manages"
+      - source: "Node"
+        target: "Pod"
+        type: "hosts"
+      - source: "Pod"
+        target: "Container Runtime"
+        type: "uses"
+      - source: "Pod"
+        target: "Persistent Storage"
+        type: "connected_to"
+      - source: "Service"
+        target: "Pod"
+        type: "exposes"
+      - source: "Deployment"
+        target: "Pod"
+        type: "maintains"
+      - source: "Custom Resource"
+        target: "Control Plane"
+        type: "extends"
+    raw_text: |
+      A Kubernetes cluster includes a control plane and worker nodes.
+      The control plane manages every node and schedules pods across the nodes in the cluster.
+      Pods are hosted on nodes and run container-based workloads through a container runtime.
+      Services expose running applications on sets of pods.
+      Deployments maintain the lifecycle of application pods.
+      Custom resources extend the Kubernetes API as part of the control plane[web:1].
+
+  - name: "OpenShift AI Data Science Cluster Pipeline"
+    description: "Components and steps involved in an OpenShift AI data science workflow pipeline."
+    components:
+      - DataScienceCluster
+      - Dashboard
+      - Workbenches
+      - Model Serving
+      - Data Science Pipelines
+      - Model Registry
+      - Distributed Workloads
+      - Training Operator
+      - Spark
+      - Feast
+      - Model
+      - Real-time Inference Service
+    relationships:
+      - source: "DataScienceCluster"
+        target: "Dashboard"
+        type: "includes"
+      - source: "DataScienceCluster"
+        target: "Workbenches"
+        type: "includes"
+      - source: "DataScienceCluster"
+        target: "Model Serving"
+        type: "enables"
+      - source: "DataScienceCluster"
+        target: "Data Science Pipelines"
+        type: "enables"
+      - source: "DataScienceCluster"
+        target: "Model Registry"
+        type: "includes"
+      - source: "Data Science Pipelines"
+        target: "Spark"
+        type: "uses_for_preparation"
+      - source: "Data Science Pipelines"
+        target: "Feast"
+        type: "manages_features"
+      - source: "Data Science Pipelines"
+        target: "Training Operator"
+        type: "uses_for_training"
+      - source: "Training Operator"
+        target: "Model"
+        type: "outputs"
+      - source: "Model"
+        target: "Model Registry"
+        type: "registered_in"
+      - source: "Model"
+        target: "Real-time Inference Service"
+        type: "deployed_to"
+    raw_text: |
+      Create a DataScienceCluster resource that configures all the OpenShift AI components such as Dashboard, Workbenches, Model Serving, Data Science Pipelines, Model Registry, Distributed Workloads, and Training Operator.
+      In a typical pipeline, data is prepared with Spark, features are managed with Feast, models are trained, registered, and then deployed for real-time inference, all coordinated by Data Science Pipelines.
+      This workflow automates and governs the entire AI/ML lifecycle from data preparation to live model serving[web:2].

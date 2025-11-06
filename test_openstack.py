@@ -1,5 +1,7 @@
 """Test script for OpenStack architecture diagram generation."""
+
 from main import generate_diagram
+from utils import print_success, print_error, print_tip, colorize, Colors
 import sys
 
 # OpenStack architecture description based on Red Hat documentation
@@ -27,25 +29,26 @@ Third-party Components:
 The Dashboard connects to Identity service for authentication. Identity service provides authentication to all other OpenStack services including Compute, Networking, Block Storage, Object Storage, Image, Orchestration, and Telemetry. Compute service manages virtual machines and connects to Block Storage for volumes and Image service for VM images. Networking service provides network connectivity to Compute instances. Object Storage uses Memcached for caching authenticated clients."""
 
 try:
-    print('='*60)
-    print('Generating OpenStack Architecture Diagram')
-    print('='*60)
-    print('\nUsing Red Hat Enterprise Linux OpenStack Platform documentation')
-    print('Reference: https://docs.redhat.com/en/documentation/red_hat_enterprise_linux_openstack_platform/7/html/architecture_guide/components\n')
-    
-    rendered_file, source_file = generate_diagram(
-        request, 
-        output_filename='openstack_architecture', 
-        silent=False
+    print(colorize("=" * 60, Colors.CYAN))
+    print(colorize("Generating OpenStack Architecture Diagram", Colors.CYAN, bold=True))
+    print(colorize("=" * 60, Colors.CYAN))
+    print("\nUsing Red Hat Enterprise Linux OpenStack Platform documentation")
+    print(
+        "Reference: https://docs.redhat.com/en/documentation/red_hat_enterprise_linux_openstack_platform/7/html/architecture_guide/components\n"
     )
-    
-    print(f'\n✅ Success! Diagram generated successfully!')
-    print(f'   Rendered diagram: {rendered_file}')
-    print(f'   Source code: {source_file}')
-    print(f'\n💡 Tip: Open {rendered_file} to view the diagram\n')
-    
+
+    rendered_file, source_file = generate_diagram(
+        request, output_filename="openstack_architecture", silent=False
+    )
+
+    print_success(f"\nSuccess! Diagram generated successfully!", bold=True)
+    print(f"   Rendered diagram: {rendered_file}")
+    print(f"   Source code: {source_file}")
+    print_tip(f"Open {rendered_file} to view the diagram\n")
+
 except Exception as e:
-    print(f'\n❌ Failed to generate diagram: {e}')
+    print_error(f"\nFailed to generate diagram: {e}")
     import traceback
+
     traceback.print_exc()
     sys.exit(1)

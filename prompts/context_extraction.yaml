@@ -6,6 +6,8 @@ system: |
 
   Task:
 
+  Generate a descriptive title for the diagram based on the documentation (e.g., "Kubernetes Cluster Architecture", "Microservices System", "Network Topology").
+
   Identify all Groups/Boundaries. These are logical or physical containers like "Data Center," "AWS VPC," "On-Premises Environment," "Host Machine," or "Capsule Server."
 
   Identify all Components. These are the individual items, such as "router," "switch," "server," "microservice," "database," "API gateway," or "virtual machine."
@@ -31,57 +33,55 @@ system: |
   Ensure the output is a single, complete JSON object and nothing else.
 
 human: |
-  {user_request}
-  
   DOCUMENTATION:
-
-  {documentation}
+  {user_request}
 
   Example format:
-    {
+    {{
     "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "object",
-    "properties": {
-      "groups": {
+    "properties": {{
+      "title": {{ "type": "string" }}, // A descriptive title for the diagram (e.g., "Kubernetes Cluster Architecture", "Microservices System")
+      "groups": {{
         "type": "array",
-        "items": {
+        "items": {{
           "type": "object",
-          "properties": {
-            "id": { "type": "string" }, // e.g., "datacenter_1", "aws_vpc"
-            "label": { "type": "string" }, // e.g., "Data Center 1", "AWS VPC (us-east-1)"
-            "type": { "type": "string" } // e.g., "datacenter", "cloud_region", "host"
-          },
+          "properties": {{
+            "id": {{ "type": "string" }}, // e.g., "datacenter_1", "aws_vpc"
+            "label": {{ "type": "string" }}, // e.g., "Data Center 1", "AWS VPC (us-east-1)"
+            "type": {{ "type": "string" }} // e.g., "datacenter", "cloud_region", "host"
+          }},
           "required": ["id", "label"]
-        }
-      },
-      "components": {
+        }}
+      }},
+      "components": {{
         "type": "array",
-        "items": {
+        "items": {{
           "type": "object",
-          "properties": {
-            "id": { "type": "string" },
-            "label": { "type": "string" },
-            "type": { "type": "string" }, // "service", "router", "database", "vpc", etc.
-            "parent_group": { "type": "string" } // ID of a group from the 'groups' array
-          },
+          "properties": {{
+            "id": {{ "type": "string" }},
+            "label": {{ "type": "string" }},
+            "type": {{ "type": "string" }}, // "service", "router", "database", "vpc", etc.
+            "parent_group": {{ "type": "string" }} // ID of a group from the 'groups' array
+          }},
           "required": ["id", "label", "type"]
-        }
-      },
-      "relationships": {
+        }}
+      }},
+      "relationships": {{
         "type": "array",
-        "items": {
+        "items": {{
           "type": "object",
-          "properties": {
-            "id": { "type": "string" },
-            "source": { "type": "string" },
-            "target": { "type": "string" },
-            "label": { "type": "string" },
-            "type": { "type": "string" } // "api_call", "data_flow", "vpn_connection", etc.
-          },
+          "properties": {{
+            "id": {{ "type": "string" }},
+            "source": {{ "type": "string" }},
+            "target": {{ "type": "string" }},
+            "label": {{ "type": "string" }},
+            "type": {{ "type": "string" }} // "api_call", "data_flow", "vpn_connection", etc.
+          }},
           "required": ["source", "target", "label"]
-        }
-      }
-    },
-    "required": ["components", "relationships"]
-  }
+        }}
+      }}
+    }},
+    "required": ["title", "components", "relationships"]
+    }}
   
